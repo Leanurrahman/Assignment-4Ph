@@ -22,9 +22,22 @@ function calculateCount() {
   total.innerText = allCardSection.children.length;
   InterviewCount.innerText = interviewlist.length;
   RejectCount.innerText = rejectlist.length;
+
 }
 calculateCount();
 
+
+function updateJobCounts() {
+    const totalJobs = allCardSection.children.length;
+    document.getElementById('totaljobCount').innerText = totalJobs;
+    
+    total.innerText = totalJobs;
+    InterviewCount.innerText = interviewlist.length;
+    RejectCount.innerText = rejectlist.length;
+}
+
+
+updateJobCounts();
 // toggle function
 
 function Togglestyle(id) {
