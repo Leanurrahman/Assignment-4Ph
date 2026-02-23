@@ -18,26 +18,38 @@ const allCardSection = document.getElementById("allcards");
 const mainContainer = document.querySelector("main");
 const filterSection = document.getElementById("filtered-section");
 
+//job count er new variable decalred
+const displayCountSpan = document.getElementById("display-count");
+const totalTextSpan = document.getElementById("total-text");
+const maxJobsSpan = document.getElementById("max-jobs");
+let totalJobsCount = allCardSection.children.length;
+
+
 function calculateCount() {
   total.innerText = allCardSection.children.length;
   InterviewCount.innerText = interviewlist.length;
   RejectCount.innerText = rejectlist.length;
-
+ 
 }
+
+
+function updateDisplayCount() {
+  const appliedCount = interviewlist.length + rejectlist.length;
+  
+  if (appliedCount === 0) {
+    displayCountSpan.innerText = totalJobsCount;
+    totalTextSpan.classList.add('hidden'); 
+  } else {
+    displayCountSpan.innerText = appliedCount;
+    totalTextSpan.classList.remove('hidden'); 
+    maxJobsSpan.innerText = totalJobsCount;
+  }
+}
+
+
 calculateCount();
+updateDisplayCount();
 
-
-function updateJobCounts() {
-    const totalJobs = allCardSection.children.length;
-    document.getElementById('totaljobCount').innerText = totalJobs;
-    
-    total.innerText = totalJobs;
-    InterviewCount.innerText = interviewlist.length;
-    RejectCount.innerText = rejectlist.length;
-}
-
-
-updateJobCounts();
 // toggle function
 
 function Togglestyle(id) {
@@ -70,6 +82,7 @@ function Togglestyle(id) {
           renderReject();
 
   }
+    updateDisplayCount();
 }
 
 mainContainer.addEventListener("click", function (event) {
@@ -103,6 +116,7 @@ mainContainer.addEventListener("click", function (event) {
     rejectlist = rejectlist.filter(item => item.Mobile != cardinfo.Mobile);
   
   calculateCount();
+  updateDisplayCount(); //job er shte count update kora hoise
   if(currentstatus == 'reject-filter-btn'){
     renderReject();
   }
@@ -143,7 +157,7 @@ mainContainer.addEventListener("click", function (event) {
    }
   
   calculateCount();
-
+  updateDisplayCount();
 
   }
 });

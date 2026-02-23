@@ -55,9 +55,13 @@
                 <h2 class="text-black font-bold">Available Jobs</h2>
             </div>
 
-            <div class="rightside">
-                <p><span id="totaljobCount">8</span> jobs</p>
-            </div>
+    <div class="rightside">
+    <h2 class="text-gray-600 font-medium">
+        <span id="display-count">8</span> 
+        <span id="total-text" class="hidden">of <span id="max-jobs">8</span></span> 
+        jobs
+    </h2>
+</div>
         </div>
         <div class="space-x-3 mt-4">
             <button onclick="Togglestyle('all-filter-btn')" id="all-filter-btn"
@@ -75,7 +79,10 @@
         </div>
 
         <!-- filter card section -->
-        <section id="filtered-section" class="hidden"></section>
+        <section id="filtered-section" class="hidden">
+
+
+        </section>
 
         <!-- card Section -->
         <section id="allcards" class="mx-auto w-full lg:w-[1110px] mt-4 space-y-7">
@@ -85,7 +92,7 @@
                     <h3 class="mobile text-[#002C5C] font-black mt-2.5">
                         Mobile First Corp
                     </h3>
-                    <button class="border-gray-300 border rounded-full py-2 px-3 text-center">
+                    <button class="border-gray-300 border rounded-full py-2 px-3 text-center cursor-pointer">
                         <i class="fa-regular fa-trash-can"></i>
                     </button>
                 </div>
