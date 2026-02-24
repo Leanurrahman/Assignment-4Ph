@@ -25,6 +25,7 @@ const maxJobsSpan = document.getElementById("max-jobs");
 let totalJobsCount = allCardSection.children.length;
 
 
+//calculating card top card
 function calculateCount() {
   total.innerText = allCardSection.children.length;
   InterviewCount.innerText = interviewlist.length;
@@ -48,120 +49,158 @@ function updateDisplayCount() {
 
 
 calculateCount();
-updateDisplayCount();
+updateDisplayCount(); //check korbe in page load
 
 // toggle function
-
 function Togglestyle(id) {
-  //adding white bg for all
-  allfilterBtn.classList.add("bg-gray-300", "text-black");
-  interviewfilterBtn.classList.add("text-black");
-  rejectfilterBtn.classList.add("text-black");
+    // Reset all buttons style
+    [allfilterBtn, interviewfilterBtn, rejectfilterBtn].forEach(btn => {
+        btn.classList.add("bg-gray-200", "text-black");
+        btn.classList.remove("bg-[#3B82F6]", "text-white");
+    });
 
-  //remove previous blue
-  allfilterBtn.classList.remove("bg-[#3B82F6]", "text-white");
-  interviewfilterBtn.classList.remove("bg-[#3B82F6]", "text-white");
-  rejectfilterBtn.classList.remove("bg-[#3B82F6]", "text-white");
+    const activeBtn = document.getElementById(id);
+    currentstatus = id;
+    
+    // Set active button style
+    activeBtn.classList.remove("bg-gray-200", "text-black");
+    activeBtn.classList.add("bg-[#3B82F6]", "text-white");
 
-  const activeBtn = document.getElementById(id);
-  currentstatus = id;
-  //adding blue bg for current button
-  activeBtn.classList.remove("bg-gray-300", "text-black");
-  activeBtn.classList.add("bg-[#3B82F6]", "text-white");
-
-  if(id == 'Interview-filter-btn'){
-    allCardSection.classList.add('hidden');
-    filterSection.classList.remove('hidden');
-    renderInterview();
-  }else if(id == 'all-filter-btn'){
-    allCardSection.classList.remove('hidden');
-    filterSection.classList.add('hidden');
-  }else if(id == 'reject-filter-btn'){
+    // Show/Hide sections
+    if(id === 'Interview-filter-btn'){
         allCardSection.classList.add('hidden');
-          filterSection.classList.remove('hidden');
-          renderReject();
-
-  }
+        filterSection.classList.remove('hidden');
+        renderInterview();
+    } else if(id === 'all-filter-btn'){
+        allCardSection.classList.remove('hidden');
+        filterSection.classList.add('hidden');
+    } else if(id === 'reject-filter-btn'){
+        allCardSection.classList.add('hidden');
+        filterSection.classList.remove('hidden');
+        renderReject();
+    }
     updateDisplayCount();
 }
 
-mainContainer.addEventListener("click", function (event) {
-    console.log(event.target.classList.contains("interview-btn"));
+// delete function
+function deleteJob(companyName, fromSection) {
+    console.log(`Deleting: ${companyName} from ${fromSection}`);
     
-  if (event.target.classList.contains("interview-btn")) {
+    if (fromSection === 'all') {
+        // All section theke specifid card delet kora
+        const cards = Array.from(allCardSection.children); // HTML Collection to Array
+        
+        for (let card of cards) {
+            const mobileElement = card.querySelector('.mobile');
+            // nam mille delet kora
+            if (mobileElement && mobileElement.innerText.trim() === companyName.trim()) {
+                card.remove(); // DOM theke muche fela
+                totalJobsCount--; // card reduce kora
+                
+                // list thekeo remove korbo
+                interviewlist = interviewlist.filter(item => item.Mobile !== companyName);
+                rejectlist = rejectlist.filter(item => item.Mobile !== companyName);
+                
+                break; // ekta card delet kore loop stop kore debo
+            }
+        }
+        
+        calculateCount();
+        updateDisplayCount();
+        
+        // rerender from onno tab
+        if(currentstatus === 'Interview-filter-btn') renderInterview();
+        if(currentstatus === 'reject-filter-btn') renderReject();
 
-    const parentNode = event.target.parentNode.parentNode.parentNode;
-    const Mobile = parentNode.querySelector(".mobile").innerText;
-    const React = parentNode.querySelector(".react").innerText;
-    const Salary = parentNode.querySelector(".amount").innerText;
-    const NOTapplied = parentNode.querySelector(".NOTapplied").innerText;
-    const Notes = parentNode.querySelector(".notes").innerText;
+    } else if (fromSection === 'interview') {
+        // Interview list theke remove
+        interviewlist = interviewlist.filter(item => item.Mobile !== companyName);
+        renderInterview();
+        calculateCount();
+        updateDisplayCount();
+        
+    } else if (fromSection === 'rejected') {
+        // Rejected list theke remove
+        rejectlist = rejectlist.filter(item => item.Mobile !== companyName);
+        renderReject();
+        calculateCount();
+        updateDisplayCount();
+    }
+}
 
-    parentNode.querySelector('.NOTapplied').innerText = 'INTERVIEW'
 
-    const cardinfo = {
-      Mobile,
-      React,
-      Salary,
-      NOTapplied: 'INTERVIEW',
-      Notes,
-    };
+mainContainer.addEventListener("click", function (event) {
+    const target = event.target;
 
-    const Mobileexist = interviewlist.find(item => item.Mobile == cardinfo.Mobile);
-
-    if (!Mobileexist) {
-      interviewlist.push(cardinfo);
+    const deleteBtn = target.closest('.delete-btn');
+    if (deleteBtn) {
+        const cardDiv = deleteBtn.closest('.py-5'); 
+        if(cardDiv) {
+            const Mobile = cardDiv.querySelector(".mobile").innerText.trim();
+            let fromSection = 'all';
+            if (filterSection.contains(cardDiv)) {
+                const badge = cardDiv.querySelector('.NOTapplied');
+                if(badge?.innerText.includes('INTERVIEW')) fromSection = 'interview';
+                else if(badge?.innerText.includes('REJECTED')) fromSection = 'rejected';
+            }
+            
+            deleteJob(Mobile, fromSection);
+        }
+        return; //function close eikhne
     }
 
-    rejectlist = rejectlist.filter(item => item.Mobile != cardinfo.Mobile);
-  
-  calculateCount();
-  updateDisplayCount(); //job er shte count update kora hoise
-  if(currentstatus == 'reject-filter-btn'){
-    renderReject();
-  }
+    // interview button handle
+    if (target.classList.contains("interview-btn")) {
+        const cardDiv = target.closest('.py-5');
+        const Mobile = cardDiv.querySelector(".mobile").innerText.trim();
+        const React = cardDiv.querySelector(".react").innerText;
+        const Salary = cardDiv.querySelector(".amount").innerText;
+        const Notes = cardDiv.querySelector(".notes").innerText;
 
-  } else if (event.target.classList.contains("reject-btn")) {
+        //UI update hbe
+        const badge = cardDiv.querySelector('.NOTapplied');
+        badge.innerText = 'INTERVIEW';
+        badge.className = 'NOTapplied text-[#002C5C] bg-green-100 px-5 py-2 rounded-lg font-semibold inline-block mb-3';
 
-    const parentNode = event.target.parentNode.parentNode.parentNode;
+        // Data update hbe
+        if (!interviewlist.find(item => item.Mobile === Mobile)) {
+            interviewlist.push({ Mobile, React, Salary, NOTapplied: 'INTERVIEW', Notes });
+        }
+        rejectlist = rejectlist.filter(item => item.Mobile !== Mobile);
 
-    const Mobile = parentNode.querySelector(".mobile").innerText;
-    const React = parentNode.querySelector(".react").innerText;
-    const Salary = parentNode.querySelector(".amount").innerText;
-    const NOTapplied = parentNode.querySelector(".NOTapplied").innerText;
-    const Notes = parentNode.querySelector(".notes").innerText;
-
-    parentNode.querySelector('.NOTapplied').innerText = 'REJECTED'
-
-    const cardinfo = {
-      Mobile,
-      React,
-      Salary,
-      NOTapplied: 'REJECTED',
-      Notes,
-    };
-
-    const Mobileexist = rejectlist.find(item => item.Mobile == cardinfo.Mobile);
-
-    if (!Mobileexist) {
-      rejectlist.push(cardinfo);
+        calculateCount();
+        updateDisplayCount();
+        
+        if(currentstatus === 'Interview-filter-btn') renderInterview();
+        if(currentstatus === 'reject-filter-btn') renderReject();
+        return;
     }
-  
-    //removing the card from interviewlist
-        interviewlist = interviewlist.filter(item => item.Mobile != cardinfo.Mobile);
+    // Reject button click handle
+    if (target.classList.contains("reject-btn")) {
+        const cardDiv = target.closest('.py-5');
+        const Mobile = cardDiv.querySelector(".mobile").innerText.trim();
+        const React = cardDiv.querySelector(".react").innerText;
+        const Salary = cardDiv.querySelector(".amount").innerText;
+        const Notes = cardDiv.querySelector(".notes").innerText;
 
-  // //   console.log(interviewlist);
+        //ui update hbe
+        const badge = cardDiv.querySelector('.NOTapplied');
+        badge.innerText = 'REJECTED';
+        badge.className = 'NOTapplied text-[#002C5C] bg-red-100 px-5 py-2 rounded-lg font-semibold inline-block mb-3';
 
-   if(currentstatus=="Interview-filter-btn"){
-    renderInterview();
-   }
-  
-  calculateCount();
-  updateDisplayCount();
+        // data update hbe
+        if (!rejectlist.find(item => item.Mobile === Mobile)) {
+            rejectlist.push({ Mobile, React, Salary, NOTapplied: 'REJECTED', Notes });
+        }
+        interviewlist = interviewlist.filter(item => item.Mobile !== Mobile);
 
-  }
+        if(currentstatus === 'Interview-filter-btn') renderInterview();
+        
+        calculateCount();
+        updateDisplayCount();
+        return;
+    }
 });
-
 
 
 function renderInterview() {
