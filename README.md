@@ -40,3 +40,6 @@ Event Delegation in JavaScript is useful in following ways-
 
 Ans: The difference between preventDefault() and stopPropagation() methods are given below-
 
+preventDefault(): It stops the default behaviour of an element.for example it prevents a form form submitting when the submit button is clicked, or stops a link from navigating to a new page. It does not stop the event from bubbling up. 
+
+stopPropagation(): It Stops the event bubbling process.It prevents the event from traveling up to parent elements. However, it does not stop the element's default behavior like a form submission.
