@@ -202,12 +202,12 @@ mainContainer.addEventListener("click", function (event) {
     }
 });
 
-
+//Rendering interview section
 function renderInterview() {
   filterSection.innerHTML = "";
   
   if (interviewlist.length === 0) {
-filterSection.innerHTML = `
+    filterSection.innerHTML = `
     <div class="flex flex-col items-center justify-center py-20 bg-base-100 rounded-xl border-2 border-dashed border-blue-200">
       
         <img src="ass_4.png" alt="No jobs available" class="w-40 h-40 object-contain mb-6">
@@ -229,7 +229,7 @@ filterSection.innerHTML = `
     <div class="py-5 bg-base-100 rounded-xl shadow-md items-start p-8 mt-4">
             <div class="flex justify-between">
                 <h3 class="mobile text-[#002C5C] font-black mt-2.5">${interview.Mobile}</h3>
-                <button class="border-gray-300 border rounded-full py-2 px-3 text-center delete-btn">
+                <button class="border-gray-300 border rounded-full py-2 px-3 text-center delete-btn  cursor-pointer">
                   <i class="fa-regular fa-trash-can"></i>
                 </button>
             </div>
@@ -257,6 +257,7 @@ filterSection.innerHTML = `
   }
 }
 
+//Rendering reject section
 function renderReject() {
   filterSection.innerHTML = "";
   
@@ -282,7 +283,7 @@ function renderReject() {
     <div class="py-5 bg-base-100 rounded-xl shadow-md items-start p-8 mt-4">
             <div class="flex justify-between">
                 <h3 class="mobile text-[#002C5C] font-black mt-2.5">${reject.Mobile}</h3>
-                <button class="border-gray-300 border rounded-full py-2 px-3 text-center delete-btn">
+                <button class="border-gray-300 border rounded-full py-2 px-3 text-center delete-btn  cursor-pointer">
                   <i class="fa-regular fa-trash-can"></i>
                 </button>
             </div>
